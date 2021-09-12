@@ -1,0 +1,5 @@
+# curlrc to use localhost server as *.anatawa12.com
+
+resolve = anatawa12.com:80:127.0.0.1
+resolve = blog.anatawa12.com:80:127.0.0.1
+resolve = nico-ranking.anatawa12.com:80:127.0.0.1
