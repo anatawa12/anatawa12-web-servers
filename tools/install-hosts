@@ -59,26 +59,29 @@ while getopts df:sh OPT; do
 done
 shift $((OPTIND - 1))
 
-make_args() {
-  if [ $DELETE_ONLY -eq 1 ]; then
-    set -- -d "$@"
-  fi
-  set -- -f "$PATH_TO_HOSTS" "$@"
-}
-
 if [ ! -w "$PATH_TO_HOSTS" ]; then
   if [ $AUTO_SUDO -eq 0 ]; then
       printf "Permission looks not enough\n" 1>&2
       exit $1
   fi
-  make_args
+  if [ $DELETE_ONLY -eq 1 ]; then
+    set -- -d "$@"
+  fi
+  set -- -f "$PATH_TO_HOSTS" "$@"
   exec sudo $0 "$@"
 fi
 
 PREFIX="### SECTION FOR anatawa12-web-servers"
 SUFFIX="### END SECTION"
 
-if [ -z "$(cat "$PATH_TO_HOSTS" | sed -n "/$PREFIX/,/$SUFFIX/p")" ]; then
+if [ "$DELETE_ONLY" -eq 1 ]; then
+  # when to delete
+  TEMPFILE="$(mktemp "/tmp/hosts-temp.XXXXXX")"
+  sed "/$PREFIX/,/$SUFFIX/d" < "$PATH_TO_HOSTS" > "$TEMPFILE"
+  cat "$TEMPFILE" > "$PATH_TO_HOSTS"
+  rm "$TEMPFILE"
+  printf "successfully deleted\n" 1>&2
+elif [ -z "$(cat "$PATH_TO_HOSTS" | sed -n "/$PREFIX/,/$SUFFIX/p")" ]; then
   # if not exists, append
   echo "$PREFIX" >> "$PATH_TO_HOSTS"
   cat "$SCRIPT_DIR/../hosts" >> "$PATH_TO_HOSTS"
