@@ -5,6 +5,10 @@ services:
     image: 'web-frontend'
     ports:
        - '80:80'
+       - '443:443'
+    volumes: 
+      - './resources/main.crt:/ssl/main.crt'
+      - './resources/main.key:/ssl/main.key'
   web-files-anatawa12-com:
     build: 'files'
     image: 'web-files-anatawa12-com'
