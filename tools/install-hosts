@@ -1,0 +1,99 @@
+#!/bin/bash
+# The script to install hosts.
+
+set -eu
+
+script_dir() {
+  local SOURCE="$0"
+  while [ -h "$SOURCE" ]; do
+    local TARGET;
+    TARGET="$(readlink "$SOURCE")"
+    if [[ $TARGET == /* ]]; then
+      SOURCE="$TARGET"
+    else
+      DIR="$( dirname "$SOURCE" )"
+      SOURCE="$DIR/$TARGET"
+    fi
+  done
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  echo "$DIR"
+}
+
+SCRIPT_DIR="$(script_dir)"
+
+usage_exit() {
+        printf "Usage: $0 [-d] [-s] [-f path/to/hosts]\n" 1>&2
+        exit $1
+}
+
+full_usage_exit() {
+        printf "$0\n" 1>&2
+        printf "The tool to install hosts for this repository\n" 1>&2
+        printf "\n" 1>&2
+        printf "Usage: $0 [-d] [-s] [-f /path/to/hosts]\n" 1>&2
+        printf "\n" 1>&2
+        printf "OPTIONS:\n" 1>&2
+        printf "\t-d                  Delete only, do not install\n" 1>&2
+        printf "\t-s                  Disable auto sudo, error if permission is not enough\n" 1>&2
+        printf "\t-f [/path/to/hosts] Path to custom hosts file\n" 1>&2
+        exit $1
+}
+
+PATH_TO_HOSTS=/etc/hosts
+DELETE_ONLY=0
+AUTO_SUDO=1
+
+while getopts df:sh OPT; do
+    case $OPT in
+        d)  DELETE_ONLY=1
+            ;;
+        f)  PATH_TO_HOSTS=$OPTARG
+            ;;
+        s)  AUTO_SUDO=0
+            ;;
+        h)  full_usage_exit 0
+            ;;
+        \?) usage_exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+make_args() {
+  if [ $DELETE_ONLY -eq 1 ]; then
+    set -- -d "$@"
+  fi
+  set -- -f "$PATH_TO_HOSTS" "$@"
+}
+
+if [ ! -w "$PATH_TO_HOSTS" ]; then
+  if [ $AUTO_SUDO -eq 0 ]; then
+      printf "Permission looks not enough\n" 1>&2
+      exit $1
+  fi
+  make_args
+  exec sudo $0 "$@"
+fi
+
+PREFIX="### SECTION FOR anatawa12-web-servers"
+SUFFIX="### END SECTION"
+
+if [ -z "$(cat "$PATH_TO_HOSTS" | sed -n "/$PREFIX/,/$SUFFIX/p")" ]; then
+  # if not exists, append
+  echo "$PREFIX" >> "$PATH_TO_HOSTS"
+  cat "$SCRIPT_DIR/../hosts" >> "$PATH_TO_HOSTS"
+  echo "$SUFFIX" >> "$PATH_TO_HOSTS"
+else
+  # if not exists, replace
+  TEMPFILE="$(mktemp "/tmp/hosts-temp.XXXXXX")"
+  sed "/$PREFIX/,/$SUFFIX/{
+    /$PREFIX/{
+      p
+      r $SCRIPT_DIR/../hosts
+    }
+    /$SUFFIX/p
+    d
+  }" < "$PATH_TO_HOSTS" > "$TEMPFILE"
+  cat "$TEMPFILE" > "$PATH_TO_HOSTS"
+  rm "$TEMPFILE"
+fi
