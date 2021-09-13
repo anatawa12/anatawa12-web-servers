@@ -12,3 +12,7 @@ services:
     image: 'ghcr.io/anatawa12/zip-http-server'
     volumes: 
       - './resources/nico-ranking.zip:/root.zip'
+  web-ppcm-anatawa12-com:
+    image: 'php:8-apache'
+    volumes: 
+      - './resources/ppcm:/var/www/html'
