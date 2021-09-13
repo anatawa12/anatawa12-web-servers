@@ -3,6 +3,7 @@ services:
   web-frontend:
     build: 'frontend'
     image: 'web-frontend'
+    restart: 'unless-stopped'
     ports:
        - '80:80'
        - '443:443'
@@ -12,11 +13,14 @@ services:
   web-files-anatawa12-com:
     build: 'files'
     image: 'web-files-anatawa12-com'
+    restart: 'unless-stopped'
   web-nico-ranking-anatawa12-com:
     image: 'ghcr.io/anatawa12/zip-http-server'
+    restart: 'unless-stopped'
     volumes: 
       - './resources/nico-ranking.zip:/root.zip'
   web-ppcm-anatawa12-com:
     image: 'php:8-apache'
+    restart: 'unless-stopped'
     volumes: 
       - './resources/ppcm:/var/www/html'
