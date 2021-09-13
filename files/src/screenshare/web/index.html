@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    #touch {
+        position: absolute;
+
+        width: 70%;
+        height: 100%;
+        display: inline-block;
+        background-color: gray;
+    }
+    #log-div {
+        position: absolute;
+        left: 70%;
+
+        width: 20%;
+        height: 100%;
+        display: inline-block;
+        background-color: black;
+        color: white;
+
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #log {
+        white-space: pre-line;
+    }
+</style>
+
+<div id="touch"></div>
+<div id="log-div">
+    <span id="log"></span>
+</div>
+
+<script src="./index.js" charset="utf-8"></script>

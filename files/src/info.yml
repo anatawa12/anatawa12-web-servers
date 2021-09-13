@@ -1,0 +1,12 @@
+ignore:
+  - info.yml
+  - composer.phar
+  - composer.lock
+  - composer.json
+  - 404.php
+  - 403.php
+  - main.css
+  - index.php
+  - private
+  - vendor
+  - screenshare

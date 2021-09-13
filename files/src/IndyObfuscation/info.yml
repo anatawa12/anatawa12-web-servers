@@ -1,0 +1,7 @@
+desc: An tool make make binary Obfuscation
+info: An tool make make binary Obfuscation. Please download, unzip, and see "readme.en.txt".
+ignore:
+  - info.yml
+files: 
+  "IndyObfuscation-1.0.zip": "version 1.0"
+  "IndyObfuscation-1.1.zip": "version 1.1"

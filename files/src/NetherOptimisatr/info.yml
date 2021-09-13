@@ -1,0 +1,4 @@
+desc: A tool from Migly
+ignore:
+  - info.yml
+files: {"NetherOptimisatr-1.0.0.zip": "version 1.0.0" }

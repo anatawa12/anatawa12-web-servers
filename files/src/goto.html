@@ -1,0 +1,11 @@
+<!doctype html>
+<input id="url" type="url">
+<a id="go">go</a>
+
+<script>
+const urlElem = document.getElementById("url");
+const goElem = document.getElementById("go");
+urlElem.onchange = function() {
+    goElem.href = urlElem.value;
+};
+</script>

@@ -5,6 +5,9 @@ services:
     image: 'web-frontend'
     ports:
        - '80:80'
+  web-files-anatawa12-com:
+    build: 'files'
+    image: 'web-files-anatawa12-com'
   web-nico-ranking-anatawa12-com:
     image: 'ghcr.io/anatawa12/zip-http-server'
     volumes: 

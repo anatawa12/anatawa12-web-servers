@@ -1,0 +1,44 @@
+- name: NFR-PasmoMod
+  dir: nfr-pasmo
+  mcAndModVersions:
+    1.12.2:
+      - var: 0.0.1
+        depends:
+          - KotlinModDevApi@[1.12.2-0.0.1,1.12.2-0.0.2]
+      - var: 0.0.2
+        depends:
+          - KotlinModDevApi@[1.12.2-0.0.1,1.12.2-0.0.2]
+      - var: 0.0.3
+        depends:
+          - KotlinModDevApi@[1.12.2-0.0.1,1.12.2-0.0.2]
+          - OpenComputers-MC1.12.2@[1.7.2.67]
+      - var: 0.0.4
+        depends:
+          - KotlinModDevApi@[1.12.2-0.0.2]
+          - OpenComputers-MC1.12.2@[1.7.2.67]
+  jarNameTemplate: NFR-Pasmo-${version}.jar
+  info: |
+    This mod is for [NFR Server](http://www.nfrserver.info/).
+
+- name: KotlinModDevApi
+  dir: kmda
+  mcAndModVersions:
+    1.12.2:
+      - var: 1.12.2-0.0.1
+        depends:
+          - minecraftForge@[1.12.2-14.23.2.2611,)
+      - var: 1.12.2-0.0.2
+        depends:
+          - minecraftForge@[1.12.2-14.23.2.2611,)
+  jarNameTemplate: KotlinModDevApi-${version}.jar
+  info: |
+    A mod for anatawa12's mod. This is an library mod
+- name: OCRTM Connector
+  dir: oc_rtm
+  mcAndModVersions:
+    1.12.2:
+      - var: 1.0.0
+        depends:
+          - RTM@[2.4.5]
+          - KotlinModDevApi@[1.12.2-0.0.1,1.12.2-0.0.2]
+  jarNameTemplate: OCRTM-${version}.jar

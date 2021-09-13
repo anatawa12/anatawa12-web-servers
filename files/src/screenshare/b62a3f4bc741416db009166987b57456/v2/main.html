@@ -1,0 +1,75 @@
+<style>
+    #main-outer {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+    }
+    #main {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: white;
+        z-index: 10;
+    }
+</style>
+
+<div id="controls">
+    <label for="sdp-text">sdp</label><textarea id="sdp-text"></textarea>
+    <label for="scale">scale:</label><input type="range" id="scale" name="volume" min="1" max="200" value="100">
+    <button id="play" disabled>play</button>
+    <br>
+</div>
+
+<div id="main-outer">
+<canvas id="main"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.4.5/base64.min.js"></script>
+<script src="./packets.js"></script>
+<script src="./states.js"></script>
+<script src="./largeDataChannel.js"></script>
+<script src="./context.js"></script>
+<!--suppress PointlessArithmeticExpressionJS -->
+<script>
+    (async () => {
+        // noinspection JSValidateTypes
+        /** @type HTMLInputElement */
+        const scale = document.getElementById("scale");
+        // noinspection JSValidateTypes
+        /** @type HTMLDivElement */
+        const mainOuter = document.getElementById("main-outer");
+
+        // noinspection JSValidateTypes
+        /** @type HTMLCanvasElement */
+        const canvas = document.getElementById("main");
+
+        // noinspection JSValidateTypes
+        /** @type HTMLButtonElement */
+        const play = document.getElementById("play");
+        // noinspection JSValidateTypes
+        /** @type HTMLTextAreaElement */
+        const sdpText = document.getElementById("sdp-text");
+
+        scale.addEventListener("input", () => {
+            mainOuter.style.transform = `scale(${Number(scale.value) / 100})`;
+        })
+
+        play.addEventListener("click", async () => {
+            play.disabled = true
+            const ctx = new Context(canvas)
+            sdpText.value = await ctx.startConnecting(sdpText.value)
+            await ctx.start()
+            await ctx.waitUntilDisconnect()
+            play.disabled = false
+        })
+
+        play.disabled = false
+    })()
+</script>

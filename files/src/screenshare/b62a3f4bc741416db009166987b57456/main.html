@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        #display {
+            position: absolute;
+            width: 75%;
+            height: 75%;
+        }
+
+        #VirtualPad {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #remote-window {
+            position: absolute;
+        }
+
+        #remote-window-cursor {
+            position: absolute;
+        }
+
+        #remote-window-scale {
+            position: absolute;
+        }
+
+        #left-infos {
+            position: absolute;
+            left: 75%;
+            width: 25%;
+            height: 75%;
+            background-color: gray;
+        }
+
+        #keyboard-input {
+            margin: 4px;
+            border: rgb(118, 118, 118) inset 2px;
+            padding: 1px 2px;
+            width: calc(100% - 16px);
+        }
+
+        .tool-area-button {
+            margin: 4px;
+            box-sizing: border-box;
+            border: rgb(118, 118, 118) solid 1px;
+            padding: 1px 6px;
+        }
+
+        #buttons {
+            position: absolute;
+            top: 75%;
+            height: 25%;
+            width: 100%;
+            background-color: darkgray;
+
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            height: calc(100% / 4 - 2px);
+            border: 1px #fff solid;
+        }
+
+        .twelve-button {
+            width: calc(100% / 12 - 2px);
+        }
+
+        .four-button {
+            width: calc(100% / 4 - 2px);
+        }
+
+        .button > p {
+            height: 100%;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+    <title>Virtual Pad Sample</title>
+</head>
+<body>
+
+<div id="display">
+    <div id="remote-window-scale">
+        <div id="remote-window">
+            <video id="remote-window-image"></video>
+            <img alt="" id="remote-window-cursor" src="cursor.png" width="28"/>
+        </div>
+    </div>
+    <canvas id="VirtualPad"></canvas>
+</div>
+<div id="left-infos">
+<div id="tool-area">
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <textarea id="keyboard-input"></textarea>
+    <button id="clip-board-send" class="tool-area-button">send clip board</button>
+    <button id="clip-board-get" class="tool-area-button">get clip board</button>
+    <button id="do-ping" class="tool-area-button">ping</button>
+    <div class="tool-area-button"><input type="checkbox" id="send-key" checked><label for="send-key">send key</label></div>
+</div>
+<div id="pc-infos">
+</div>
+</div>
+<div id="buttons">
+    <div class="button twelve-button f01"><p>F1</p></div>
+    <div class="button twelve-button f02"><p>F2</p></div>
+    <div class="button twelve-button f03"><p>F3</p></div>
+    <div class="button twelve-button f04"><p>F4</p></div>
+    <div class="button twelve-button f05"><p>F5</p></div>
+    <div class="button twelve-button f06"><p>F6</p></div>
+    <div class="button twelve-button f07"><p>F7</p></div>
+    <div class="button twelve-button f08"><p>F8</p></div>
+    <div class="button twelve-button f09"><p>F9</p></div>
+    <div class="button twelve-button f10"><p>F10</p></div>
+    <div class="button twelve-button f11"><p>F11</p></div>
+    <div class="button twelve-button f12"><p>F12</p></div>
+
+
+    <div class="button four-button esc-button"><p>esc</p></div>
+    <div class="button four-button up-button"><p>↑</p></div>
+    <div class="button four-button fn-button"><p>fn</p></div>
+    <div class="button four-button left-click-button"><p>left click</p></div>
+
+    <div class="button four-button left-button"><p>←</p></div>
+    <div class="button four-button down-button"><p>↓</p></div>
+    <div class="button four-button right-button"><p>→</p></div>
+    <div class="button four-button center-click-button"><p>center click</p></div>
+
+    <div class="button four-button ctrl-button"><p>ctrl</p></div>
+    <div class="button four-button alt-button"><p>alt</p></div>
+    <div class="button four-button meta-button"><p>cmd / windows</p></div>
+    <div class="button four-button right-click-button"><p>right click</p></div>
+
+</div>
+
+<div id="start-view" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;background-color: white;">
+    <div id="open-setting">
+        <h3>version: 1.1.5</h3><br>
+        <label>url: <input id="start-entry-url" type="url" value="https://files.anatawa12.com/screenshare/b62a3f4bc741416db009166987b57456/api/api.php"></label><br>
+        <label>user: <input id="start-entry-user" type="text" value=""></label><br>
+        <label>pass: <input id="start-entry-pass" type="password" value=""></label><br>
+        <button id="start-button">start</button>
+    </div>
+    <span id="start-status"></span>
+    <button id="start-open-button" hidden>start</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/21.0.1/min/jcanvas.min.js"
+        integrity="sha256-rUshvLY805GcMilbPNnko2JxFKj254/GJZwIP6yaiEk=" crossorigin="anonymous"></script>
+<script>
+    const clamp = (min, max, value) => value < min ? min : max < value ? max : value;
+    const infos = $("#pc-infos");
+    const remoteWindow = $("#remote-window");
+    const display = $("#display");
+    const remoteWindowImage = $("#remote-window-image");
+    const remoteWindowCursor = $("#remote-window-cursor");
+    const remoteWindowScale = $("#remote-window-scale");
+    const keyboardInput = $("#keyboard-input");
+    const clipBoardSend = $("#clip-board-send");
+    const clipBoardGet = $("#clip-board-get");
+    const doPing = $("#do-ping");
+    const sendKey = $("#send-key");
+    let desktopSize = 1.0;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let main;
+    /** @type { function(ToPcMessage):void } */
+    let sendMsg;
+
+    function escapeHTML(str) {
+        return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    /** @type { function(string):void } */
+    const addLog = (text) => {
+        infos.html(escapeHTML(text) + "<br>" + infos.html());
+    }
+
+    /** @type { function():void } */
+    let onPong = () => {}
+
+    /** @type { function(string):void | null } */
+    let onClipboard = null
+
+    const setMouse = (x, y) => {
+        const remoteWindowWidth = remoteWindowImage.width();
+        const remoteWindowHeight = remoteWindowImage.height();
+
+        mouseX = x;
+        mouseY = y;
+
+        mouseX = clamp(0, remoteWindowWidth, mouseX);
+        mouseY = clamp(0, remoteWindowHeight, mouseY);
+    }
+</script>
+
+<script src="tap-mouse-manager.js"></script>
+<script src="webrtc-manager.js"></script>
+
+<script>
+    main = () => {
+
+        setMouse(0, 0);
+        desktopSize = 1.0;
+
+        const buttons = {
+            "up-button": "ArrowUp",
+            "down-button": "ArrowDown",
+            "left-button": "ArrowLeft",
+            "right-button": "ArrowRight",
+
+            "esc-button": "Escape",
+
+            "left-click-button": "left-click",
+            "center-click-button": "center-click",
+            "right-click-button": "right-click",
+
+            "ctrl-button": "Control",
+            "alt-button": "Alt",
+            "meta-button": "Meta",
+
+            "fn-button": "Fn",
+
+            "f01": "F1",
+            "f02": "F2",
+            "f03": "F3",
+            "f04": "F4",
+            "f05": "F5",
+            "f06": "F6",
+            "f07": "F7",
+            "f08": "F8",
+            "f09": "F9",
+            "f10": "F10",
+            "f11": "F11",
+            "f12": "F12",
+        };
+
+        for (let buttonsKey in buttons) {
+            const button = $(`.${buttonsKey}`);
+            const buttonName = buttons[buttonsKey];
+            button.on("touchstart mousedown", (event) => {
+                event.preventDefault();
+                button.css("background-color", "gray");
+                if (buttonName.endsWith("-click")) {
+                    const mouseName = buttonName.substring(0, buttonName.length - 6);
+                    addLog("mouseDown: " + mouseName)
+                    sendMsg({type: "mouse-down", button: mouseName})
+                } else {
+                    addLog("keyDown: " + buttonName)
+                    sendMsg({type: "key-down", key: buttonName})
+                }
+            });
+            button.on("touchend mouseup", (event) => {
+                event.preventDefault();
+                button.css("background-color", "darkgray");
+                if (buttonName.endsWith("-click")) {
+                    const mouseName = buttonName.substring(0, buttonName.length - 6);
+                    addLog("mouseUp: " + mouseName)
+                    sendMsg({type: "mouse-up", button: mouseName})
+                } else {
+                    addLog("keyUp: " + buttonName)
+                    sendMsg({type: "key-up", key: buttonName})
+                }
+            });
+        }
+
+        clipBoardSend.on("click", async (event) => {
+            let text;
+            try {
+                text = await navigator.clipboard.readText()
+            } catch (e) {
+                addLog("error getting local clipboard")
+                addLog("so will use textarea")
+                console.error(e);
+                text = keyboardInput.val()
+            }
+            sendMsg({type: "clipboard", data: text})
+        })
+
+        clipBoardGet.on("click", async (event) => {
+            addLog("getting remote clipboard")
+            sendMsg({type: "clipboard-request"})
+            const text = await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject("time up")
+                    onClipboard = null
+                }, 1000)
+                onClipboard = (txt) => {
+                    resolve(txt)
+                    clearTimeout(timeout)
+                }
+            })
+
+            try {
+                await navigator.clipboard.writeText(text);
+                addLog("got clipboard and copied!.");
+            } catch (e) {
+                addLog("err copying remote text");
+                addLog("so will use textarea")
+                console.error(e);
+                keyboardInput.val(text)
+            }
+        })
+
+        let pinging = false
+        doPing.on("click", async (event) => {
+            if (pinging) {
+                addLog("waiting response from remote now!")
+                return
+            }
+            pinging = true
+            const t0 = performance.now()
+            sendMsg({type:"ping"})
+            onPong = () => {
+                const t1 = performance.now()
+                onPong = () => {}
+                addLog(`doSomething took ${(t1 - t0).toFixed(4)} ms`)
+                pinging = false
+            }
+        })
+
+        //*
+        const extraKeys = Object.fromEntries(Object.entries(buttons).map(([k, v]) => [v, true]))
+        $(window).on("keydown", (event) => {
+            if (!sendKey.prop('checked')) return;
+            event.preventDefault();
+            if (extraKeys[event.code])
+                addLog("keyDown: " + event.code)
+            sendMsg({type: "key-down", key: event.code})
+        });
+        $(window).on("keyup", (event) => {
+            if (!sendKey.prop('checked')) return;
+            event.preventDefault();
+            if (extraKeys[event.code])
+                addLog("keyUp: " + event.code)
+            sendMsg({type: "key-up", key: event.code})
+        });
+        // */
+
+        const update = () => {
+            const realDisplayWidth = display.width();
+            const realDisplayHeight = display.height();
+            const displayWidth = realDisplayWidth / desktopSize;
+            const displayHeight = realDisplayHeight / desktopSize;
+            const remoteWindowWidth = remoteWindowImage.width();
+            const remoteWindowHeight = remoteWindowImage.height();
+
+            if (realDisplayWidth > remoteWindowWidth * desktopSize) {
+                desktopSize = realDisplayWidth / remoteWindowWidth
+            }
+            if (realDisplayHeight > remoteWindowHeight * desktopSize) {
+                desktopSize = realDisplayHeight / remoteWindowHeight
+            }
+
+            remoteWindowScale[0].style.transform = "scale(" + desktopSize + ")";
+
+            remoteWindow[0].style.left = -clamp(0, remoteWindowWidth - displayWidth, mouseX - displayWidth / 2) + "px";
+            remoteWindow[0].style.top = -clamp(0, remoteWindowHeight - displayHeight, mouseY - displayHeight / 2) + "px";
+
+            remoteWindowCursor[0].style.left = (mouseX - 6) + "px";
+            remoteWindowCursor[0].style.top = (mouseY - 6) + "px";
+
+            requestAnimationFrame(update);
+        };
+        requestAnimationFrame(update);
+    };
+</script>
+</body>
+</html>
