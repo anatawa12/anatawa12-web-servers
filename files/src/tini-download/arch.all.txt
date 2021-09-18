@@ -1,0 +1,40 @@
+amd64   :amd64
+x64     :amd64
+x86_64  :amd64
+x86-64  :amd64
+ia32e   :amd64
+intel64 :amd64
+em64t   :amd64
+
+muslc-amd64     :muslc-amd64
+muslc-x64       :muslc-amd64
+muslc-x86_64    :muslc-amd64
+muslc-x86-64    :muslc-amd64
+muslc-ia32e     :muslc-amd64
+muslc-intel64   :muslc-amd64
+muslc-em64t     :muslc-amd64
+
+arm6    :armel
+armv6   :armel
+armel   :armel
+
+arm7    :armhf
+armv7   :armhf
+armhf   :armhf
+
+arm8    :arm64
+armv8   :arm64
+arm64   :arm64
+aarch64 :arm64
+
+i386    :i386
+x86     :i386
+ia32    :i386
+
+mips64      :mips64el
+mips64el    :mips64el
+
+ppc64el :ppc64el
+ppc64le :ppc64le
+
+s390x   :s390x

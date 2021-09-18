@@ -1,0 +1,8 @@
+6:armhf
+7:armhf
+8:arm64
+el:armel
+hf:armhf
+v6:armel
+v7:armhf
+v8:arm64
