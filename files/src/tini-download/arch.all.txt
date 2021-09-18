@@ -27,6 +27,7 @@ armv8   :arm64
 arm64   :arm64
 aarch64 :arm64
 
+386     :i386
 i386    :i386
 x86     :i386
 ia32    :i386
