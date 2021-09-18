@@ -6,4 +6,6 @@ ErrorDocument 404 /404.php
 RewriteEngine on
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}/index.php !-f
+RewriteCond %{REQUEST_FILENAME}/index.html !-f
 RewriteRule (.*) /index.php [L]
