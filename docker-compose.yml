@@ -14,10 +14,6 @@ services:
     build: 'api'
     image: 'web-api-anatawa12-com'
     restart: 'unless-stopped'
-  web-files-anatawa12-com:
-    build: 'files'
-    image: 'web-files-anatawa12-com'
-    restart: 'unless-stopped'
   web-nico-ranking-anatawa12-com:
     image: 'ghcr.io/anatawa12/zip-http-server'
     restart: 'unless-stopped'
