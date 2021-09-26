@@ -1,0 +1,6 @@
+RewriteEngine on
+
+RewriteRule ^a12-(active|slowly|inactive|archived)-doc$ redirector-doc.php [L]
+RewriteRule ^a12-(active|slowly|inactive|archived)-svg$ redirector-svg.php [L]
+
+RewriteOptions inherit

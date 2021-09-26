@@ -10,6 +10,10 @@ services:
     volumes: 
       - './resources/main.crt:/ssl/main.crt'
       - './resources/main.key:/ssl/main.key'
+  web-api-anatawa12-com:
+    build: 'api'
+    image: 'web-api-anatawa12-com'
+    restart: 'unless-stopped'
   web-files-anatawa12-com:
     build: 'files'
     image: 'web-files-anatawa12-com'
