@@ -24,3 +24,27 @@ services:
     restart: 'unless-stopped'
     volumes: 
       - './resources/ppcm:/var/www/html'
+
+  web-wiki-fixrtm-anatawa12-com:
+    image: ghcr.io/anatawa12/wiki-js-fixrtm:2.5.219-fixrtm-2
+    restart: unless-stopped
+    depends_on: [db-wiki-fixrtm]
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db-wiki-fixrtm
+      DB_PORT: 5432
+      DB_NAME: wiki
+      DB_USER: wikijs
+      DB_PASS: wikijsrocks
+  db-wiki-fixrtm:
+    image: postgres:11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_USER: wikijs
+      POSTGRES_PASSWORD: wikijsrocks
+    volumes:
+      - db-wiki-fixrtm-data:/var/lib/postgresql/data
+
+volumes:
+  db-wiki-fixrtm-data:
