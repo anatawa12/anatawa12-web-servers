@@ -26,7 +26,7 @@ services:
       - './resources/ppcm:/var/www/html'
 
   web-wiki-fixrtm-anatawa12-com:
-    image: ghcr.io/fixrtm/wiki-js-for-fixrtm:2.5.219-fixrtm-5
+    image: ghcr.io/fixrtm/wiki-js-for-fixrtm:2.5.219-fixrtm-6
     restart: unless-stopped
     depends_on: [db-wiki-fixrtm]
     environment:
