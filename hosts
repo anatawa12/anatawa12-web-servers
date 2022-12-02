@@ -1,8 +1,8 @@
 # hosts to use localhost server as *.anatawa12.com
-127.0.0.1 anatawa12.com
 127.0.0.1 blog.anatawa12.com
 127.0.0.1 files.anatawa12.com
 127.0.0.1 nico-ranking.anatawa12.com
 127.0.0.1 ppcm.anatawa12.com
 127.0.0.1 api.anatawa12.com
 127.0.0.1 wiki-fixrtm.anatawa12.com
+127.0.0.1 go.anatawa12.com
