@@ -10,6 +10,9 @@ services:
     volumes: 
       - './resources/main.crt:/ssl/main.crt'
       - './resources/main.key:/ssl/main.key'
+    networks:
+      - vrcinfo-db_default
+      - default
   web-api-anatawa12-com:
     build: 'api'
     image: 'web-api-anatawa12-com'
@@ -48,3 +51,7 @@ services:
 
 volumes:
   db-wiki-fixrtm-data:
+
+networks:
+  vrcinfo-db_default:
+    external: true
