@@ -14,16 +14,22 @@ services:
     build: 'api'
     image: 'web-api-anatawa12-com'
     restart: 'unless-stopped'
+    environment:
+      VIRTUAL_HOST: api.anatawa12.com
   web-nico-ranking-anatawa12-com:
     image: 'ghcr.io/anatawa12/zip-http-server'
     restart: 'unless-stopped'
     volumes: 
       - './resources/nico-ranking.zip:/root.zip'
+    environment:
+      VIRTUAL_HOST: nico-ranking.anatawa12.com
   web-ppcm-anatawa12-com:
     image: 'php:8-apache'
     restart: 'unless-stopped'
     volumes: 
       - './resources/ppcm:/var/www/html'
+    environment:
+      VIRTUAL_HOST: ppcm.anatawa12.com
 
   web-wiki-fixrtm-anatawa12-com:
     image: ghcr.io/fixrtm/wiki-js-for-fixrtm:v2.5.292-fixrtm-3
@@ -36,6 +42,7 @@ services:
       DB_NAME: wiki
       DB_USER: wikijs
       DB_PASS: wikijsrocks
+      VIRTUAL_HOST: ppcm.anatawa12.com
   db-wiki-fixrtm:
     image: postgres:11-alpine
     restart: unless-stopped
