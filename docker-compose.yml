@@ -1,19 +1,5 @@
 version: '3'
 services:
-  web-frontend:
-    build: 'frontend'
-    image: 'web-frontend'
-    restart: 'unless-stopped'
-    ports:
-       - '80:80'
-       - '443:443'
-    volumes: 
-      - './resources/main.crt:/ssl/main.crt'
-      - './resources/main.key:/ssl/main.key'
-    networks:
-      - vrcinfo-db_default
-      - default
-    profiles: [web-frontend-enabled]
   web-api-anatawa12-com:
     build: 'api'
     image: 'web-api-anatawa12-com'
