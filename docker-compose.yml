@@ -45,7 +45,7 @@ services:
       DB_NAME: wiki
       DB_USER: wikijs
       DB_PASS: wikijsrocks
-      VIRTUAL_HOST: ppcm.anatawa12.com
+      VIRTUAL_HOST: wiki-fixrtm.anatawa12.com
       VIRTUAL_PORT: 3000
   db-wiki-fixrtm:
     image: postgres:11-alpine
