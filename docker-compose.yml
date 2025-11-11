@@ -13,6 +13,7 @@ services:
     networks:
       - vrcinfo-db_default
       - default
+    profiles: [web-frontend-enabled]
   web-api-anatawa12-com:
     build: 'api'
     image: 'web-api-anatawa12-com'
