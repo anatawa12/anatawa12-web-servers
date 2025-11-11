@@ -46,7 +46,3 @@ services:
 
 volumes:
   db-wiki-fixrtm-data:
-
-networks:
-  vrcinfo-db_default:
-    external: true
